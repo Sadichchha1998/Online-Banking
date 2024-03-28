@@ -38,6 +38,15 @@ public class Transaction {
 
     private LocalDate date;
 
-    // Constructors, getters, and setters
+	public Transaction(Account sourceAccount, Account destinationAccount, User user, double amount, LocalDate date) {
+		super();
+		this.sourceAccount = sourceAccount;
+		this.destinationAccount = destinationAccount;
+		this.user = user;
+		this.amount = amount;
+		this.date = date;
+	}
+
+    
 }
 

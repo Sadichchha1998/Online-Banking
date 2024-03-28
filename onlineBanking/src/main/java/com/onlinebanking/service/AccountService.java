@@ -16,10 +16,10 @@ public interface AccountService {
     
    public Account deleteAccount(String accountNumber);
     
-   public Account deposit(Long accountId, double amount);
+   public Account deposit(String accountNumber, double amount);
     
-   public Account withdraw(Long accountId, double amount);
+   public Account withdraw(String accountNumber, double amount);
     
-   public Transaction transfer(Long sourceAccountId, Long destinationAccountId, double amount);
+   public Transaction transfer(String sourceAccountId, String destinationAccountId, double amount);
 }
 
