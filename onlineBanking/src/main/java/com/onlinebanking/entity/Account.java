@@ -1,6 +1,9 @@
 package com.onlinebanking.entity;
 
 import java.time.LocalDate;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -36,6 +39,7 @@ public class Account {
 
 	@ManyToOne
 	@JoinColumn(name = "user_id")
+	@JsonBackReference 
 	private User user;
 
 }

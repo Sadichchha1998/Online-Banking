@@ -37,14 +37,15 @@ public class Transaction {
     private double amount;
 
     private LocalDate date;
-
-	public Transaction(Account sourceAccount, Account destinationAccount, User user, double amount, LocalDate date) {
+    private String msg;
+	public Transaction(Account sourceAccount, Account destinationAccount, User user, double amount, LocalDate date,String msg) {
 		super();
 		this.sourceAccount = sourceAccount;
 		this.destinationAccount = destinationAccount;
 		this.user = user;
 		this.amount = amount;
 		this.date = date;
+		this.msg=msg;
 	}
 
     

@@ -23,6 +23,7 @@ public class AccountServiceImpl implements AccountService {
 	private AccountRepository accountRepo;
 	@Autowired
 	private UserRepository userRepo;
+	@Autowired
     private TransactionRepository trasactionRepo;
 	@Override
 	public Account createAccount(Account account) {
@@ -92,8 +93,11 @@ public class AccountServiceImpl implements AccountService {
 		Account acc = account.get();
 		double totalAmount = acc.getBalance() + amount;
 		acc.setBalance(totalAmount);
-
-		return accountRepo.save(acc);
+        Account accD=accountRepo.save(acc);
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Transaction tr= new Transaction(accD, null, user, amount, LocalDate.now(),amount+" Rupees deposited in your account");
+        trasactionRepo.save(tr);
+		return accD;
 	}
 
 	@Override
@@ -110,7 +114,7 @@ public class AccountServiceImpl implements AccountService {
 		/** ensuring the user if he has same account or not*/
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		List<Account> list= user.getAccounts();
-		Optional<Account> ac=list.stream().filter(a->a.getAccountNumber()==accountNumber).findAny();
+		Optional<Account> ac=list.stream().filter(a->a.getAccountNumber()!=accountNumber).findAny();
 		if(!ac.isPresent()) {
 			throw new RuntimeException("Account number you entered is not your account please verify your account number");
 		}
@@ -123,15 +127,22 @@ public class AccountServiceImpl implements AccountService {
 		/** finally withdraw process is done*/
 		double totalbal = acc.getBalance() - amount;
 		acc.setBalance(totalbal);
-		return accountRepo.save(acc);
+		Account accW=accountRepo.save(acc);
+		Transaction tr = new Transaction(accW, null, user, amount, LocalDate.now(), amount+" deducted from your account");
+		trasactionRepo.save(tr);
+		return accW;
 	}
 
 	@Override
 	public Transaction transfer(String sourceAccountId, String destinationAccountId, double amount) {
+		if(sourceAccountId.equals(destinationAccountId)) {
+			throw new RuntimeException("Account number should not be same");
+		}
 		Account sourceAcc= withdraw(sourceAccountId, amount);
 		Account destinationAcc= deposit(destinationAccountId, amount);
+		
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		Transaction transaction= new Transaction(sourceAcc, destinationAcc, user, amount, LocalDate.now());
+		Transaction transaction= new Transaction(sourceAcc, destinationAcc, user, amount, LocalDate.now(),amount+" transfered Successfully");
 		return trasactionRepo.save(transaction);
 	}
 
